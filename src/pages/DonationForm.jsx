@@ -70,7 +70,6 @@ const DonationForm = () => {
       return (isError = true);
     }
     if (!amount) {
-      console.log('amount');
       handleSnakbarOpen("Please enter amount", "error");
       document.getElementById("amount").focus();
       return (isError = true);
@@ -80,7 +79,7 @@ const DonationForm = () => {
   };
   const submit = () => {
     let err = validation();
-    console.log("err", err);
+   
     if (err) {
       return;
     } else {
@@ -91,7 +90,7 @@ const DonationForm = () => {
     }
   };
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" style={{background:'#F3F3F3'}}>
       <Grid
         container
         direction="column"

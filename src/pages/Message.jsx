@@ -10,11 +10,11 @@ import { useLocation } from "react-router-dom";
 
 const Message = () => {
   const { search } = useLocation();
-  console.log("search", search);
+
   const searchParams = new URLSearchParams(search);
   const name = searchParams.get("name");
   const amount = searchParams.get("amount");
-  console.log("aaaa", name, amount);
+
   return (
     <Container maxWidth="md">
       <Grid
@@ -78,13 +78,13 @@ const Message = () => {
             </Grid>
           </Grid> */}
           <p
-                style={{
-                  fontSize: "20px",
-                  color: "#333", 
-                }}
-              >
-                Amount : {amount} Tk
-              </p>
+            style={{
+              fontSize: "20px",
+              color: "#333",
+            }}
+          >
+            Amount : {amount} Tk
+          </p>
           <Button
             variant="contained"
             disableElevation
