@@ -5,13 +5,91 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png";
+import { useSnackbar } from "notistack";
+import { useHistory } from "react-router-dom";
 
+import { makeStyles } from "@mui/styles";
+const useStyles = makeStyles({
+  input: {
+    "& input[type=number]": {
+      "-moz-appearance": "textfield",
+    },
+    "& input[type=number]::-webkit-outer-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
+    "& input[type=number]::-webkit-inner-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
+  },
+});
 const DonationForm = () => {
+  const classes = useStyles();
+  let history = useHistory();
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const handleSnakbarOpen = (msg, vrnt) => {
+    let duration;
+    if (vrnt === "error") {
+      duration = 3000;
+    } else {
+      duration = 1000;
+    }
+    enqueueSnackbar(msg, {
+      variant: vrnt,
+      autoHideDuration: duration,
+    });
+  };
+  const validation = () => {
+    let isError = false;
+
+    if (!name.trim()) {
+      handleSnakbarOpen("Please enter name", "error");
+      document.getElementById("name").focus();
+      return (isError = true);
+    }
+    if (!number.trim()) {
+      handleSnakbarOpen("Please enter number", "error");
+      document.getElementById("number").focus();
+      return (isError = true);
+    }
+    if (!email.trim()) {
+      handleSnakbarOpen("Please enter email address", "error");
+      document.getElementById("email").focus();
+      return (isError = true);
+    }
+    if (!address.trim()) {
+      handleSnakbarOpen("Please enter address", "error");
+      document.getElementById("address").focus();
+      return (isError = true);
+    }
+    if (!amount) {
+      console.log('amount');
+      handleSnakbarOpen("Please enter amount", "error");
+      document.getElementById("amount").focus();
+      return (isError = true);
+    }
+
+    return isError;
+  };
+  const submit = () => {
+    let err = validation();
+    console.log("err", err);
+    if (err) {
+      return;
+    } else {
+      history.push({
+        pathname: "/message",
+        search: `?name=${name}&amount=${amount}`,
+      });
+    }
+  };
   return (
     <Container maxWidth="sm">
       <Grid
@@ -62,7 +140,7 @@ const DonationForm = () => {
 
           <TextField
             style={{ marginBottom: "20px" }}
-            id="mobile-number"
+            id="number"
             size="small"
             fullWidth
             label="Mobile Number"
@@ -99,6 +177,7 @@ const DonationForm = () => {
           <TextField
             style={{ marginBottom: "30px" }}
             id="amount"
+            className={classes.input}
             size="small"
             fullWidth
             label="Amount"
@@ -121,11 +200,7 @@ const DonationForm = () => {
               display: "block",
               textAlign: "center",
             }}
-            component={Link}
-            to={{
-              pathname: "/message",
-              search: `?name=${name}&amount=${amount}`,
-            }}
+            onClick={submit}
           >
             Confirm
           </Button>
