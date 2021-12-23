@@ -7,8 +7,9 @@ import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import { useSnackbar } from "notistack";
 import { useHistory } from "react-router-dom";
-
+import { v4 as uuidv4 } from "uuid";
 import { makeStyles } from "@mui/styles";
+import axios from "axios";
 const useStyles = makeStyles({
   input: {
     "& input[type=number]": {
@@ -77,20 +78,58 @@ const DonationForm = () => {
 
     return isError;
   };
-  const submit = () => {
+  const submit = async (e) => {
+    e.preventDefault();
     let err = validation();
    
     if (err) {
       return;
     } else {
-      history.push({
-        pathname: "/message",
-        search: `?name=${name}&amount=${amount}`,
-      });
+      try {
+        let uuid = uuidv4();
+        let splitId = uuid.split("-");
+        let newUUID = splitId.join("");
+        const obj = {
+          name: "Scarf",
+          qty: 1,
+          unit_price: 5000,
+          sub_total: 5000,
+        };
+        let cardData = [obj];
+        const cardJSON = JSON.stringify(cardData);
+
+        let data = {
+          store_id: "1953_939",
+          store_password: "Password100@",
+          order_id: newUUID,
+          bill_amount: amount,
+          currency: "IQD",
+          cart: cardJSON,
+        };
+        console.log("data", data);
+        let response = await axios({
+          method: "post",
+          url: "https://staging-apigw-merchant.fast-pay.iq/api/v1/public/pgw/payment/initiation",
+          data: data,
+          headers: { "content-type": "application/json" },
+        });
+        console.log("response", response);
+        console.log("status", response.status);
+        console.log("redirect_uri", response.data.data.redirect_uri);
+        if (response.status===200) {
+          window.location.href = response.data.data.redirect_uri;
+        }
+        // history.push({
+        //   pathname: "/message",
+        //   search: `?name=${name}&amount=${amount}`,
+        // });
+      } catch (error) {
+        console.log("error", error);
+      }
     }
   };
   return (
-    <Container maxWidth="sm" style={{background:'#F3F3F3'}}>
+    <Container maxWidth="sm" style={{ background: "#F3F3F3" }}>
       <Grid
         container
         direction="column"
