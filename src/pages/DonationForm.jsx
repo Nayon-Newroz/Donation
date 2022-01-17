@@ -81,7 +81,7 @@ const DonationForm = () => {
   const submit = async (e) => {
     e.preventDefault();
     let err = validation();
-   
+
     if (err) {
       return;
     } else {
@@ -116,7 +116,7 @@ const DonationForm = () => {
         console.log("response", response);
         console.log("status", response.status);
         console.log("redirect_uri", response.data.data.redirect_uri);
-        if (response.status===200) {
+        if (response.status === 200) {
           window.location.href = response.data.data.redirect_uri;
         }
         // history.push({
@@ -129,7 +129,7 @@ const DonationForm = () => {
     }
   };
   return (
-    <Container maxWidth="sm" style={{ background: "#F3F3F3" }}>
+    <Container maxWidth="sm" style={{ padding: 0 }}>
       <Grid
         container
         direction="column"
@@ -139,12 +139,16 @@ const DonationForm = () => {
           minHeight: "100vh",
         }}
       >
-        <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          style={{ background: "#F3F3F3", padding: "40px 20px",borderRadius:10 }}
+        >
           <img
             src={logo}
             alt=""
             width="160px"
-            style={{ display: "block", margin: "20px auto" }}
+            style={{ display: "block", margin: "0px auto 20px auto" }}
           />
           <div
             style={{
